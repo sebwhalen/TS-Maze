@@ -33,9 +33,21 @@ export const getNextXIntercept = ({ x, y }: Position, direction: number): Positi
  * @param direction Ray direction (in radians).
  * @returns Position of next X-axis intercept.
  */
-export const getNextYIntercept = (position: Position, direction: number): Position => {
+export const getNextYIntercept = ({ x, y }: Position, direction: number): Position | undefined => {
+    direction = direction % 360;
+
+    if (direction === 90 || direction === 270) {
+        return undefined;
+    }
+
+    const nextX = (direction < 90 || direction > 270)
+        ? Math.trunc(x) + 1
+        : Math.ceil(x) - 1
+
+    const dy = (nextX - x) * Math.tan(direction * Math.PI / 180)
+
     return {
-        x: 0,
-        y: 0
+        x: nextX,
+        y: Number((y + dy).toFixed(4))
     };
 }
