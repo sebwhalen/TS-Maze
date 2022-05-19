@@ -4,7 +4,8 @@ import { getAtMap, TileMap } from "./tileMaps";
 export const castRay = (map: TileMap, x: number, y: number, direction: number): number => {
     const interceptGenerator = getIntercepts(x, y, direction);
 
-    for (let intercept = interceptGenerator.next(); !intercept.done; intercept = interceptGenerator.next()) {
+    for (let intercept = interceptGenerator.next(); ; intercept = interceptGenerator.next()) {
+        const intercept = interceptGenerator.next();
         const { x: newX, y: newY } = intercept.value;
 
         const tx = Math.trunc(newX);
@@ -20,6 +21,4 @@ export const castRay = (map: TileMap, x: number, y: number, direction: number): 
             return Math.sqrt((newX - x) ** 2 + (newY - y) ** 2)
         }
     }
-
-    return Infinity;
 };

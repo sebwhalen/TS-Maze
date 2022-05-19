@@ -133,10 +133,6 @@ export function* getIntercepts(x: number, y: number, direction: number): Generat
         //Set position to the closest of the two.
         next = getClosest(lastX, lastY, nextX, nextY);
 
-        if (next === undefined) {
-            return;
-        }
-
         //Yield position
         yield {
             x: next.x,
