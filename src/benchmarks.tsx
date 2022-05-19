@@ -29,49 +29,35 @@ const d = 85;
 
 const bench = (runs: number) => {
     if (runs < 1 || isNaN(runs)) {
-        return [];
+        return 0;
     }
 
-    const results = new Array<number>(runs);
+    //performance.now() is imprecise, using it across all runs minimizes the error introduced 
+    const start = performance.now();
 
     for (let i = 0; i < runs; i++) {
-        const start = performance.now();
         castRay(map, x, y, d);
-        results[i] = performance.now() - start;
     }
 
-    return results;
+    return performance.now() - start;
 };
 
 
-const BenchmarkDisplay = ({ results }: { results: number[] }) => {
-    if (results.length < 1) {
+const BenchmarkDisplay = ({ results }: { results: number }) => {
+    if (results === 0) {
         return <p>No benchmarks have been run.</p>
     }
 
-    const total = results.reduce((sum, n) => sum + n, 0);
-    const average = total / results.length;
-
-    const min = results[0];
-    const max = results.at(-1);
-
     return <section>
-        <p>Across {results.length} runs:</p>
         <table>
             <thead>
                 <tr>
-                    <th>Average</th>
-                    <th>Min</th>
-                    <th>Max</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{average}</td>
-                    <td>{min}</td>
-                    <td>{max}</td>
-                    <td>{total}</td>
+                    <td>{results}</td>
                 </tr>
             </tbody>
         </table>
@@ -104,12 +90,10 @@ const BenchmarkConfig = ({ runBenchmark }: {
 };
 
 export const BenchmarkSuite = () => {
-    const [results, setResults] = useState<number[]>([]);
+    const [results, setResults] = useState<number>(0);
 
     const updateRuns = (runs: number) => {
-        const results = bench(runs);
-        results.sort((a, b) => a - b);
-        setResults(results);
+        setResults(bench(runs));
     };
 
     return <section>
