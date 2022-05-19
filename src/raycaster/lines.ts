@@ -1,10 +1,7 @@
-import { memoize } from "lodash";
 import { position, Position } from "./positions";
 
-const tanAngle = memoize(
-    (angleDeg: number): number =>
-        Math.tan(angleDeg * Math.PI / 180)
-);
+const tanAngle = (angleDeg: number): number =>
+    Math.tan(angleDeg * Math.PI / 180);
 
 const getNextXIntercept = (x: number, y: number, movingUp: boolean, dx: number): Position => {
     const nextY = (movingUp)
@@ -45,7 +42,7 @@ export function* getIntercepts(x: number, y: number, direction: number): Generat
     const dx = 1 / dy;
 
     let position = { x, y };
-    
+
     while (true) {
         //Get next X from position and direction
         const nextX = getNextXIntercept(position.x, position.y, movingUp, dx);
