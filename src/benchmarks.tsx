@@ -99,7 +99,7 @@ const BenchmarkConfig = ({ runBenchmark }: {
                     setRuns(0);
                 }
             }} />
-        <button onClick={() => runBenchmark(runs)}>Run Benchmark.</button>
+        <button onClick={() => runBenchmark(runs)}>Run Benchmark</button>
     </form>
 };
 
