@@ -51,3 +51,43 @@ export const getNextYIntercept = ({ x, y }: Position, direction: number): Positi
         y: Number((y + dy).toFixed(4))
     };
 }
+
+const getFarthest = (start: Position, p1: Position | undefined, p2: Position | undefined): Position | undefined => {
+    if (p1 === undefined && p2 === undefined) {
+        return undefined;
+    } else if (p1 === undefined) {
+        return p2;
+    } else if (p2 === undefined) {
+        return p1;
+    }
+
+    const p1Distance = (p1.x - start.x) ** 2 + (p1.y - start.y) ** 2;
+    const p2Distance = (p2.x - start.x) ** 2 + (p2.y - start.y) ** 2;
+
+    return (p1Distance < p2Distance)
+        ? p1
+        : p2
+}
+
+
+export function* getIntercepts(position: Position, direction: number): Generator<Position> {
+    while (true) {
+        //Get next X from position and direction
+        const nextX = getNextXIntercept(position, direction);
+
+        //Get next Y from position and direction
+        const nextY = getNextYIntercept(position, direction);
+
+        //Set position to the closest of the two.
+        const next  = getFarthest(position, nextX, nextY);
+
+        if(next === undefined) {
+            return;
+        }
+        
+        position = next;
+
+        //Yield position
+        yield position;
+    }
+}

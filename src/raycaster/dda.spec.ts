@@ -1,4 +1,4 @@
-import { getNextXIntercept, getNextYIntercept } from "./dda";
+import { getIntercepts, getNextXIntercept, getNextYIntercept } from "./dda";
 
 describe('getNextXIntercept', () => {
     [
@@ -92,3 +92,25 @@ describe('getNextYIntercept', () => {
         })
     )
 });
+
+describe('getIntercepts', () => {
+    [
+        {
+            position: { x: 2.5, y: 2 },
+            direction: 45,
+            expected: [
+                { x: 3, y: 2.5 },
+                { x: 3.5, y: 3 },
+                { x: 4, y: 3.5 }
+            ]
+        }
+    ].forEach(({position, direction, expected}) => {
+        test(`given (${position.x},${position.y}) and ${direction}, expect first three intercepts to be correct.`, () => {
+            const gen = getIntercepts(position, direction);
+
+            for(let i = 0; i < expected.length; i++) {
+                expect(gen.next().value).toEqual(expected[i]);
+            }
+        })
+    });
+})
