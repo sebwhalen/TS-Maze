@@ -1,5 +1,5 @@
 import { memoize } from "lodash";
-import { Position } from "./Position";
+import { position, Position } from "./positions";
 
 const tanAngle = memoize(
     (angleDeg: number): number =>
@@ -13,10 +13,7 @@ const getNextXIntercept = (x: number, y: number, movingUp: boolean, dx: number):
 
     dx = (nextY - y) * dx;
 
-    return {
-        x: x + dx,
-        y: nextY
-    };
+    return position(x + dx, nextY);
 };
 
 const getNextYIntercept = (x: number, y: number, movingRight: boolean, dy: number): Position => {
@@ -26,10 +23,7 @@ const getNextYIntercept = (x: number, y: number, movingRight: boolean, dy: numbe
 
     dy = (nextX - x) * dy;
 
-    return {
-        x: nextX,
-        y: y + dy
-    };
+    return position(nextX, y + dy);
 }
 
 const getFarthest = (start: Position, p1: Position, p2: Position): Position => {
@@ -41,7 +35,7 @@ const getFarthest = (start: Position, p1: Position, p2: Position): Position => {
         : p2;
 }
 
-export function* getIntercepts(position: Position, direction: number): Generator<Position> {
+export function* getIntercepts(x: number, y: number, direction: number): Generator<Position> {
     direction = direction % 360;
 
     const movingRight = (direction < 90 || direction > 270);
@@ -50,6 +44,8 @@ export function* getIntercepts(position: Position, direction: number): Generator
     const dy = tanAngle(direction)
     const dx = 1 / dy;
 
+    let position = { x, y };
+    
     while (true) {
         //Get next X from position and direction
         const nextX = getNextXIntercept(position.x, position.y, movingUp, dx);

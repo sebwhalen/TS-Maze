@@ -1,37 +1,38 @@
 import { getIntercepts } from "./lines";
+import { position, positionToString } from "./positions";
 
 describe('getIntercepts', () => {
     [
         {
-            position: { x: 2.5, y: 2 },
+            position: position(2.5, 2),
             direction: 45,
             expected: [
-                { x: 3, y: 2.5 },
-                { x: 3.5, y: 3 },
-                { x: 4, y: 3.5 }
+                position(3, 2.5),
+                position(3.5, 3),
+                position(4, 3.5)
             ]
         },
         {
-            position: { x: 2.5, y: 2.5 },
+            position: position(2.5, 2.5),
             direction: 0,
             expected: [
-                { x: 3, y: 2.5 },
-                { x: 4, y: 2.5 },
-                { x: 5, y: 2.5 }
+                position(3, 2.5),
+                position(4, 2.5),
+                position(5, 2.5)
             ]
         },
         {
-            position: { x: 2.5, y: 2.5 },
+            position: position(2.5, 2.5),
             direction: 90,
             expected: [
-                { x: 2.5, y: 3 },
-                { x: 2.5, y: 4 },
-                { x: 2.5, y: 5 }
+                position(2.5, 3),
+                position(2.5, 4),
+                position(2.5, 5)
             ]
         }
     ].forEach(({ position, direction, expected }) => {
-        test(`given (${position.x},${position.y}) and ${direction}, expect first three intercepts to be correct.`, () => {
-            const gen = getIntercepts(position, direction);
+        test(`given (${positionToString(position)}) and ${direction}, expect first three intercepts to be correct.`, () => {
+            const gen = getIntercepts(position.x, position.y, direction);
 
             for (let i = 0; i < expected.length; i++) {
                 expect(gen.next().value).toEqual(expected[i]);
