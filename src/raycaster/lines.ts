@@ -1,31 +1,56 @@
-import { position, Position } from "./positions";
+import { Position } from "./positions";
 
-const tanAngle = (angleDeg: number): number =>
-    Math.tan(angleDeg * Math.PI / 180);
-
-const getNextXIntercept = (x: number, y: number, movingUp: boolean, dx: number): Position => {
-    const nextY = (movingUp)
-        ? Math.trunc(y) + 1
-        : Math.ceil(y) - 1
-
-    dx = (nextY - y) * dx;
-
-    return position(x + dx, nextY);
-};
-
-const getNextYIntercept = (x: number, y: number, movingRight: boolean, dy: number): Position => {
-    const nextX = (movingRight)
+function* getYIntercepts(x: number, y: number, direction: number): Generator<Position> {
+    let next = (direction === 0)
         ? Math.trunc(x) + 1
-        : Math.ceil(x) - 1
+        : Math.ceil(x) - 1;
 
-    dy = (nextX - x) * dy;
+    yield {
+        x: next,
+        y
+    };
 
-    return position(nextX, y + dy);
+    const dx = (direction === 0)
+        ? 1
+        : -1;
+
+    while (true) {
+        next += dx;
+
+        yield {
+            x: next,
+            y
+        }
+    }
 }
 
-const getFarthest = (start: Position, p1: Position, p2: Position): Position => {
-    const p1Distance = (p1.x - start.x) ** 2 + (p1.y - start.y) ** 2;
-    const p2Distance = (p2.x - start.x) ** 2 + (p2.y - start.y) ** 2;
+function* getXIntercepts(x: number, y: number, direction: number): Generator<Position> {
+    let next = (direction === 90)
+        ? Math.trunc(y) + 1
+        : Math.ceil(y) - 1;
+
+    yield {
+        x,
+        y: next
+    };
+
+    const dy = (direction === 90)
+        ? 1
+        : -1
+
+    while (true) {
+        next += dy;
+
+        yield {
+            x,
+            y: next
+        }
+    }
+}
+
+const getClosest = (startX: number, startY: number, p1: Position, p2: Position): Position => {
+    const p1Distance = (p1.x - startX) ** 2 + (p1.y - startY) ** 2;
+    const p2Distance = (p2.x - startX) ** 2 + (p2.y - startY) ** 2;
 
     return (p1Distance < p2Distance)
         ? p1
@@ -35,31 +60,87 @@ const getFarthest = (start: Position, p1: Position, p2: Position): Position => {
 export function* getIntercepts(x: number, y: number, direction: number): Generator<Position> {
     direction = direction % 360;
 
-    const movingRight = (direction < 90 || direction > 270);
+    //If movement is purely horizontal, return simpler generator.
+    if (direction === 0 || direction === 180) {
+        yield* getYIntercepts(x, y, direction);
+    }
+
+    //If movement is purely vertical, return simpler generator.
+
+    if (direction === 90 || direction === 270) {
+        yield* getXIntercepts(x, y, direction);
+    }
+
+    //Calculate x intercept information
     const movingUp = (direction < 180);
 
-    const dy = tanAngle(direction)
-    const dx = 1 / dy;
+    const firstXInterceptY = (movingUp)
+        ? Math.trunc(y) + 1
+        : Math.ceil(y) - 1
 
-    let position = { x, y };
+    const xInterceptDy = (movingUp)
+        ? 1
+        : -1;
+
+    const xInterceptDx = Math.tan(direction * Math.PI / 180);
+
+    const nextX = {
+        x: x + (firstXInterceptY - y) * xInterceptDx,
+        y: firstXInterceptY,
+    };
+
+    //Calculate y intercept information
+    const movingRight = (direction < 90 || direction > 270);
+
+    const firstYInterceptX = (movingRight)
+        ? Math.trunc(x) + 1
+        : Math.ceil(x) - 1;
+
+    const yInterceptDx = (movingRight)
+        ? 1
+        : -1
+
+    const yInterceptDy = 1 / xInterceptDy;
+
+    const nextY = {
+        x: firstYInterceptX,
+        y: y + (firstYInterceptX - x) * yInterceptDy
+    };
+
+    //Set position to the closest of the two.
+    let next = getClosest(x, y, nextX, nextY);
+
+    yield next;
 
     while (true) {
-        //Get next X from position and direction
-        const nextX = getNextXIntercept(position.x, position.y, movingUp, dx);
+        const lastX = next.x;
+        const lastY = next.y;
 
-        //Get next Y from position and direction
-        const nextY = getNextYIntercept(position.x, position.y, movingRight, dy);
+        //If both are the same point (very unlikely), update both.  Otherwise, update the current position.
+        if (nextX.x === nextY.x && nextX.y === nextY.y) {
+            nextX.x += xInterceptDx;
+            nextX.y += xInterceptDy;
+            nextY.x += yInterceptDx;
+            nextY.y += yInterceptDy;
+        } else if (next === nextX) {
+            nextX.x += xInterceptDx;
+            nextX.y += xInterceptDy;
+        } else {
+            nextY.x += yInterceptDx;
+            nextY.y += yInterceptDy;
+        }
 
         //Set position to the closest of the two.
-        const next = getFarthest(position, nextX, nextY);
+        next = getClosest(lastX, lastY, nextX, nextY);
 
         if (next === undefined) {
             return;
         }
 
-        position = next;
-
         //Yield position
-        yield position;
+        yield {
+            x: next.x,
+            y: next.y
+        };
     }
 }

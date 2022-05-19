@@ -4,6 +4,15 @@ import { position, positionToString } from "./positions";
 describe('getIntercepts', () => {
     [
         {
+            position: position(2, 2),
+            direction: 45,
+            expected: [
+                position(3, 3),
+                position(4, 4),
+                position(5, 5)
+            ]
+        },
+        {
             position: position(2.5, 2),
             direction: 45,
             expected: [
@@ -28,6 +37,24 @@ describe('getIntercepts', () => {
                 position(2.5, 3),
                 position(2.5, 4),
                 position(2.5, 5)
+            ]
+        },
+        {
+            position: position(2.5, 2.5),
+            direction: 180,
+            expected: [
+                position(2, 2.5),
+                position(1, 2.5),
+                position(0, 2.5)
+            ]
+        },
+        {
+            position: position(2.5, 2.5),
+            direction: 270,
+            expected: [
+                position(2.5, 2),
+                position(2.5, 1),
+                position(2.5, 0)
             ]
         }
     ].forEach(({ position, direction, expected }) => {
