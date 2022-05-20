@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "esbuild src/index.tsx --inject:./src/react-shim.js --bundle --outfile=dist/index.js --sourcemap --servedir=dist",
-        "build": "esbuild src/index.tsx --inject:./src/react-shim.js --bundle --outfile=dist/index.js",
+        "start": "node serve",
+        "build": "node build",
         "test": "jest --watch"
     },
     "keywords": [],
