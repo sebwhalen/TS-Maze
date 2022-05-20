@@ -1,4 +1,4 @@
-const htmlCopyPlugin = require('./esbuildPlugins/htmlCopyPlugin.js');
+const fileCopy = require('./esbuildPlugins/fileCopy.js');
 
 module.exports = {
     entryPoints: ['./src/index.tsx'],
@@ -7,6 +7,6 @@ module.exports = {
     outfile: './dist/index.js',
     sourcemap: true,
     plugins: [
-        htmlCopyPlugin('./src/index.html', './dist/index.html')
+        fileCopy('./src/index.html', './dist/index.html')
     ]
 };
