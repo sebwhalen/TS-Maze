@@ -71,20 +71,22 @@ const BenchmarkConfig = ({ runBenchmark }: {
     const [runs, setRuns] = useState(0);
 
     return <form onSubmit={(e) => e.preventDefault()}>
-        <label htmlFor="runs">Number of runs</label>
-        <input type="text"
-            name="runs"
-            id="runs"
-            value={runs}
-            onChange={(e) => {
-                const { value } = e.target;
+        <label>
+            <span>Number of runs</span>
+            <input type="text"
+                name="runs"
+                value={runs}
+                onChange={(e) => {
+                    const { value } = e.target;
 
-                if (Number(value)) {
-                    setRuns(Number(value));
-                } else {
-                    setRuns(0);
-                }
-            }} />
+                    if (Number(value)) {
+                        setRuns(Number(value));
+                    } else {
+                        setRuns(0);
+                    }
+                }} />
+        </label>
+
         <button onClick={() => runBenchmark(runs)}>Run Benchmark</button>
     </form>
 };
