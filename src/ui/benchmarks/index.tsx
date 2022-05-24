@@ -68,7 +68,7 @@ const BenchmarkConfig = ({ runBenchmark }: {
 };
 
 export const BenchmarkSuite = () => {
-    const [results, setResults] = useState<BenchmarkResult | undefined>();
+    const [results, setResults] = useState<BenchmarkResult>();
 
     const updateRuns = (runs: number) => {
         setResults(bench(runs));

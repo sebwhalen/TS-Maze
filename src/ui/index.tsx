@@ -1,8 +1,10 @@
 import { ReactElement, useState } from "react";
-import { BenchmarkSuite } from "./benchmarks/benchmarks";
+import { BenchmarkSuite } from "./benchmarks";
+import { MapEditor } from "./mapEditor";
 
 const sections: { [name: string]: ReactElement } = {
-    'Benchmarks': <BenchmarkSuite />
+    'Benchmarks': <BenchmarkSuite />,
+    'Map Editor': <MapEditor />
 };
 
 interface SectionSelectorProps {
@@ -11,8 +13,6 @@ interface SectionSelectorProps {
 
 const SectionSelector = ({ setSection }: SectionSelectorProps) =>
     <section>
-        <p>Choose a section:</p>
-
         <ul>
             {Object.entries(sections).map(([key, value]) =>
                 <li key={key}>
@@ -20,11 +20,11 @@ const SectionSelector = ({ setSection }: SectionSelectorProps) =>
                 </li>
             )}
         </ul>
-    </section>
+    </section>;
 
 
 export const MainApp = () => {
-    const [section, setSection] = useState<ReactElement | undefined>();
+    const [section, setSection] = useState<ReactElement | undefined>(sections['Map Editor']);
 
     return (section)
         ? <section>
