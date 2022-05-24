@@ -45,7 +45,8 @@ const BenchmarkConfig = ({ runBenchmark }: {
 }) => {
     const [runs, setRuns] = useState(0);
 
-    return <form onSubmit={(e) => e.preventDefault()}>
+    return <form className="mb-10"
+        onSubmit={(e) => e.preventDefault()}>
         <label>
             <span>Number of runs</span>
             <input type="text"
