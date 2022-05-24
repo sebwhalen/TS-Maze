@@ -1,5 +1,5 @@
 import { getIntercepts } from "./lines";
-import { getAtMap, TileMap } from "./tileMaps";
+import { getAtMap, TileMap } from "../maps/tileMaps";
 
 export const castRay = (map: TileMap, x: number, y: number, direction: number): number => {
     const interceptGenerator = getIntercepts(x, y, direction);

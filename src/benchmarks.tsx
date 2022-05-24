@@ -1,63 +1,38 @@
-import { position } from "raycaster/positions";
-import { castRay } from "raycaster/rays";
-import { tileMapFromString } from "raycaster/tileMaps";
-import { useEffect, useState } from "react";
+import { BenchmarkResult } from "benchmarking/bench";
+import { benchRaycaster } from "benchmarking/raycastingBenchmarks";
+import { useState } from "react";
 
-const map = tileMapFromString(`
-11111111111
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-10000000001
-11111111111
-`, '1')
+const bench = (runs: number) =>
+    benchRaycaster({
+        numberOfRuns: runs,
+        mapSize: 100
+    });
 
-
-const { x, y } = position(1.5, 1.5);
-const d = 85;
-
-const bench = (runs: number) => {
-    if (runs < 1 || isNaN(runs)) {
-        return 0;
-    }
-
-    //performance.now() is imprecise, using it across all runs minimizes the error introduced 
-    const start = performance.now();
-
-    for (let i = 0; i < runs; i++) {
-        castRay(map, x, y, d);
-    }
-
-    return performance.now() - start;
+interface BenchmarkDisplayProps {
+    results?: BenchmarkResult
 };
 
-
-const BenchmarkDisplay = ({ results }: { results: number }) => {
-    if (results === 0) {
+const BenchmarkDisplay = ({ results }: BenchmarkDisplayProps) => {
+    if (!results) {
         return <p>No benchmarks have been run.</p>
     }
+
+    const { numberOfRuns, total, average } = results;
 
     return <section>
         <table>
             <thead>
                 <tr>
-                    <th>Total</th>
+                    <th>Runs</th>
+                    <th>Total (ms)</th>
+                    <th>Average (ms)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{results}</td>
+                    <td className="text-right">{numberOfRuns}</td>
+                    <td className="text-right">{total.toFixed(2)}</td>
+                    <td className="text-right">{average.toFixed(2)}</td>
                 </tr>
             </tbody>
         </table>
@@ -92,7 +67,7 @@ const BenchmarkConfig = ({ runBenchmark }: {
 };
 
 export const BenchmarkSuite = () => {
-    const [results, setResults] = useState<number>(0);
+    const [results, setResults] = useState<BenchmarkResult | undefined>();
 
     const updateRuns = (runs: number) => {
         setResults(bench(runs));
