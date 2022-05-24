@@ -1,4 +1,4 @@
-import { BenchmarkSuite } from 'benchmarks';
+import { MainApp } from 'ui';
 import { createRoot } from 'react-dom/client';
 
 const container = document.getElementById('container');
@@ -9,4 +9,4 @@ if(!container) {
 
 const root = createRoot(container);
 
-root.render(<BenchmarkSuite />);
+root.render(<MainApp />);
