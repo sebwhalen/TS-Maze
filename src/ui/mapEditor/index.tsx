@@ -1,4 +1,4 @@
-import { emptyTileMap, getAtMap, TileMap } from "maps/tileMaps";
+import { emptyTileMap, getAtMap, TileMap, toggleAtMap } from "maps/tileMaps";
 import React, { memo, useEffect, useRef, useState } from "react";
 
 const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
@@ -30,16 +30,17 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
     }
 };
 
-const updateMap = (map: TileMap) => (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+const updateMap = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const canvas = e.currentTarget;
+    const rect = canvas.getBoundingClientRect();
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width)) ;
+    const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
+    console.log(x, y);
+    console.log(getAtMap(map, x, y));
 
-    //TODO translate x and y to map coords
-    
-    //TODO toggle map at position
-}
+    toggleAtMap(map, x, y);
+};
 
 interface MapRendererProps {
     map: TileMap
@@ -52,8 +53,8 @@ const MapRenderer = memo(({ map }: MapRendererProps) => {
 
     return <canvas
         ref={canvasRef}
-        onClick={() => {
-            updateMap(map);
+        onClick={(e) => {
+            updateMap(map, e);
             renderMap(canvasRef.current, map);
         }}
         width="500"
@@ -65,9 +66,9 @@ const MapRenderer = memo(({ map }: MapRendererProps) => {
  *  
  */
 export const MapEditor = () => {
-    const [map] = useState(emptyTileMap(100));
+    const [map] = useState(emptyTileMap(25, 25));
 
-    return <section className="flex justify-between">
+    return <section className="flex justify-between select-none">
         <section className="border border-slate-900">
             <MapRenderer map={map} />
         </section>

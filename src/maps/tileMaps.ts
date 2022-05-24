@@ -56,3 +56,9 @@ export const emptyTileMap = (width: number, height: number = width) => {
 
 export const getAtMap = (map: TileMap, x: number, y: number) =>
     map.tiles[`${x},${y}`]?.wall ?? false;
+
+export const setAtMap = (map: TileMap, x: number, y: number, hasWall: boolean) =>
+    map.tiles[`${x},${y}`].wall = hasWall;
+
+export const toggleAtMap = (map: TileMap, x: number, y: number) =>
+    setAtMap(map, x, y, !getAtMap(map, x, y));
