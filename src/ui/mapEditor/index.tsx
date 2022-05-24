@@ -1,4 +1,4 @@
-import { emptyTileMap, getAtMap, TileMap, toggleAtMap } from "maps/tileMaps";
+import { emptyTileMap, getAtMap, setAtMap, TileMap, toggleAtMap } from "maps/tileMaps";
 import React, { memo, useEffect, useRef, useState } from "react";
 
 const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
@@ -31,15 +31,19 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
 };
 
 const updateMap = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const buttons = e.buttons;
+    if(buttons !== 1 && buttons !== 2) {
+        //Only update if button 1 or 2 is pressed.
+        return;
+    }
+
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
 
     const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width)) ;
     const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
-    console.log(x, y);
-    console.log(getAtMap(map, x, y));
 
-    toggleAtMap(map, x, y);
+    setAtMap(map, x, y, buttons === 1);
 };
 
 interface MapRendererProps {
@@ -53,7 +57,8 @@ const MapRenderer = memo(({ map }: MapRendererProps) => {
 
     return <canvas
         ref={canvasRef}
-        onClick={(e) => {
+        onContextMenu={(e) => e.preventDefault()}
+        onMouseMove={(e) => {
             updateMap(map, e);
             renderMap(canvasRef.current, map);
         }}
