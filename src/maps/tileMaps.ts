@@ -38,10 +38,7 @@ export const emptyTileMap = (width: number, height: number = width) => {
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             tiles.push({
-                position: {
-                    x,
-                    y
-                },
+                position: position(x, y),
                 wall:
                     x === 0 ||
                     y === 0 ||
