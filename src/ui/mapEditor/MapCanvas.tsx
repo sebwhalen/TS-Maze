@@ -1,7 +1,8 @@
 import { lineToDegrees, moveInDirection, position } from "geometry/positions";
 import { GameMap } from "maps/gameMaps";
 import { getAtMap, setAtMap } from "maps/tileMaps";
-import React, { memo, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import { InteractiveGrid } from "ui/tools/InteractiveGrid";
 import { MapEditMode } from "./mapEditModes";
 
 const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
@@ -53,19 +54,8 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
     ctx.stroke();
 };
 
-const handleMouse = (map: GameMap, editMode: MapEditMode, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+const handleClick = (map: GameMap, editMode: MapEditMode, x: number, y: number, leftClicked: boolean) => {
     const { tiles } = map;
-    const buttons = e.buttons;
-
-    if (buttons !== 1 && buttons !== 2) {
-        return;
-    }
-
-    const canvas = e.currentTarget;
-    const rect = canvas.getBoundingClientRect();
-
-    const x = (e.clientX - rect.left) * (tiles.width / canvas.width);
-    const y = (e.clientY - rect.top) * (tiles.height / canvas.height)
 
     const truncX = Math.trunc(x);
     const truncY = Math.trunc(y);
@@ -80,20 +70,18 @@ const handleMouse = (map: GameMap, editMode: MapEditMode, e: React.MouseEvent<HT
     }
 
     if (editMode === 'wall') {
-        setAtMap(tiles, truncX, truncY, buttons === 1);
-    } else if (buttons === 1 && !getAtMap(tiles, truncX, truncY)) {
+        setAtMap(tiles, truncX, truncY, leftClicked);
+    } else if (leftClicked && !getAtMap(tiles, truncX, truncY)) {
         map.spawn = {
             ...map.spawn,
             position: position(x, y)
         };
-    } else if (buttons === 2) {
+    } else {
         map.spawn = {
             ...map.spawn,
             direction: lineToDegrees(map.spawn.position, position(x, y))
         };
     }
-
-    renderMap(canvas, map);
 };
 
 interface MapCanvasProps {
@@ -101,16 +89,16 @@ interface MapCanvasProps {
     editMode: 'wall' | 'spawn'
 }
 
-export const MapCanvas = memo(({ map, editMode }: MapCanvasProps) => {
+export const MapCanvas = ({ map, editMode }: MapCanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => renderMap(canvasRef.current, map), []);
 
-    return <canvas
-        ref={canvasRef}
-        onContextMenu={(e) => e.preventDefault()}
-        onMouseMove={handleMouse.bind(null, map, editMode)}
-        onMouseDown={handleMouse.bind(null, map, editMode)}
-        width={20 * map.tiles.width}
-        height={20 * map.tiles.height} />;
-});
+    return <InteractiveGrid
+        width={map.tiles.width}
+        height={map.tiles.height}
+        scale={20}
+        onGridClick={handleClick.bind(null, map, editMode)}
+        render={(canvas) => renderMap(canvas, map)}
+    />;
+};
