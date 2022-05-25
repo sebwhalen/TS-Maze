@@ -1,7 +1,8 @@
-import { TileMap, getAtMap, setAtMap } from "maps/tileMaps";
-import React, { memo, useRef, useEffect, ReactComponentElement } from "react";
+import { GameMap } from "maps/gameMaps";
+import { getAtMap, setAtMap } from "maps/tileMaps";
+import React, { memo, useRef, useEffect } from "react";
 
-const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
+const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
     if (!canvas) {
         return;
     }
@@ -15,12 +16,14 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const tileWidth = Math.floor(canvas.width / map.width);
-    const tileHeight = Math.floor(canvas.height / map.height);
+    const { tiles } = map;
 
-    for (let x = 0; x < map.width; x++) {
-        for (let y = 0; y < map.height; y++) {
-            const hasWall = getAtMap(map, x, y);
+    const tileWidth = Math.floor(canvas.width / tiles.width);
+    const tileHeight = Math.floor(canvas.height / tiles.height);
+
+    for (let x = 0; x < tiles.width; x++) {
+        for (let y = 0; y < tiles.height; y++) {
+            const hasWall = getAtMap(tiles, x, y);
             ctx.fillStyle = (hasWall)
                 ? '#fff'
                 : '#000';
@@ -30,28 +33,9 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
     }
 };
 
-const setWall = (map: TileMap, hasWall: boolean, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const canvas = e.currentTarget;
-    const rect = canvas.getBoundingClientRect();
-
-    const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width));
-    const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
-
-    if (
-        x === 0 ||
-        x === map.width - 1 ||
-        y === 0 ||
-        y === map.height - 1
-    ) {
-        return;
-    }
-
-    setAtMap(map, x, y, hasWall);
-
-    renderMap(canvas, map);
-};
-
-const handleMouse = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+const handleMouse = (map: GameMap, editMode: MapEditMode, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    console.log(editMode);
+    const { tiles } = map;
     const buttons = e.buttons;
 
     if (buttons !== 1 && buttons !== 2) {
@@ -61,28 +45,29 @@ const handleMouse = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseE
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
 
-    const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width));
-    const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
+    const x = Math.trunc((e.clientX - rect.left) * (tiles.width / canvas.width));
+    const y = Math.trunc((e.clientY - rect.top) * (tiles.height / canvas.height));
 
     if (
         x === 0 ||
-        x === map.width - 1 ||
+        x === tiles.width - 1 ||
         y === 0 ||
-        y === map.height - 1
+        y === tiles.height - 1
     ) {
         return;
     }
 
-    setAtMap(map, x, y, buttons === 1);
+    setAtMap(tiles, x, y, buttons === 1);
 
     renderMap(canvas, map);
 };
 
 interface MapCanvasProps {
-    map: TileMap
+    map: GameMap,
+    editMode: 'wall' | 'spawn'
 }
 
-export const MapCanvas = memo(({ map }: MapCanvasProps) => {
+export const MapCanvas = memo(({ map, editMode }: MapCanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => renderMap(canvasRef.current, map), []);
@@ -90,8 +75,8 @@ export const MapCanvas = memo(({ map }: MapCanvasProps) => {
     return <canvas
         ref={canvasRef}
         onContextMenu={(e) => e.preventDefault()}
-        onMouseMove={handleMouse.bind(null, map)}
-        onMouseDown={handleMouse.bind(null, map)}
-        width={20 * map.width}
-        height={20 * map.height} />;
+        onMouseMove={handleMouse.bind(null, map, editMode)}
+        onMouseDown={handleMouse.bind(null, map, editMode)}
+        width={20 * map.tiles.width}
+        height={20 * map.tiles.height} />;
 });
