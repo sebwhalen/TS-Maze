@@ -1,5 +1,4 @@
-import { memo, useEffect, useRef } from "react"
-import { render } from "react-dom";
+import { memo, useEffect, useRef } from "react";
 
 type GridClickHandler = (x: number, y: number, leftClicked: boolean) => void;
 
