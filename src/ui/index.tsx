@@ -24,7 +24,7 @@ const SectionSelector = ({ setSection }: SectionSelectorProps) =>
 
 
 export const MainApp = () => {
-    const [section, setSection] = useState<ReactElement | undefined>(sections['Benchmarks']);
+    const [section, setSection] = useState<ReactElement | undefined>();
 
     return (section)
         ? <section>

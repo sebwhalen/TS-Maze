@@ -1,5 +1,5 @@
 import { TileMap, getAtMap, setAtMap } from "maps/tileMaps";
-import { memo, useRef, useEffect } from "react";
+import React, { memo, useRef, useEffect, ReactComponentElement } from "react";
 
 const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
     if (!canvas) {
@@ -30,10 +30,31 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: TileMap) => {
     }
 };
 
-const updateMap = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+const setWall = (map: TileMap, hasWall: boolean, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const canvas = e.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+
+    const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width));
+    const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
+
+    if (
+        x === 0 ||
+        x === map.width - 1 ||
+        y === 0 ||
+        y === map.height - 1
+    ) {
+        return;
+    }
+
+    setAtMap(map, x, y, hasWall);
+
+    renderMap(canvas, map);
+};
+
+const handleMouse = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     const buttons = e.buttons;
+
     if (buttons !== 1 && buttons !== 2) {
-        //Only update if button 1 or 2 is pressed.
         return;
     }
 
@@ -53,6 +74,8 @@ const updateMap = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEve
     }
 
     setAtMap(map, x, y, buttons === 1);
+
+    renderMap(canvas, map);
 };
 
 interface MapCanvasProps {
@@ -67,10 +90,8 @@ export const MapCanvas = memo(({ map }: MapCanvasProps) => {
     return <canvas
         ref={canvasRef}
         onContextMenu={(e) => e.preventDefault()}
-        onMouseMove={(e) => {
-            updateMap(map, e);
-            renderMap(canvasRef.current, map);
-        }}
+        onMouseMove={handleMouse.bind(null, map)}
+        onMouseDown={handleMouse.bind(null, map)}
         width="500"
         height="500" />;
 });
