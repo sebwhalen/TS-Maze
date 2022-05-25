@@ -1,6 +1,7 @@
 import { GameMap } from "maps/gameMaps";
 import { getAtMap, setAtMap } from "maps/tileMaps";
 import React, { memo, useRef, useEffect } from "react";
+import { MapEditMode } from "./mapEditModes";
 
 const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
     if (!canvas) {
