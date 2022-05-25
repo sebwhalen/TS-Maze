@@ -8,7 +8,7 @@ import { MapCanvas } from "./MapCanvas";
  *  
  */
 export const MapEditor = () => {
-    const [map] = useState(emptyTileMap(25, 25));
+    const [map] = useState(emptyTileMap(30, 30));
 
     return <section className="flex justify-between select-none">
         <section className="border border-slate-900">

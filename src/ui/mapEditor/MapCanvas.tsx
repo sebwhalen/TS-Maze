@@ -92,6 +92,6 @@ export const MapCanvas = memo(({ map }: MapCanvasProps) => {
         onContextMenu={(e) => e.preventDefault()}
         onMouseMove={handleMouse.bind(null, map)}
         onMouseDown={handleMouse.bind(null, map)}
-        width="500"
-        height="500" />;
+        width={20 * map.width}
+        height={20 * map.height} />;
 });
