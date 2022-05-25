@@ -34,7 +34,7 @@ const BenchmarkDisplay = ({ results }: BenchmarkDisplayProps) => {
                 </tr>
             </thead>
             <tbody>
-                {results.map((result, i) => <BenchmarkDisplayRow key={i}{...result} />)}
+                {results.map((result, i) => <BenchmarkDisplayRow key={i} {...result} />)}
             </tbody>
         </table>
     </section>

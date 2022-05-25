@@ -1,3 +1,4 @@
+import { map } from "lodash";
 import { position, Position, positionToString } from "../raycaster/positions";
 
 export interface Tile {
@@ -11,7 +12,7 @@ export const tile = (position: Position, wall: boolean) =>
 export interface TileMap {
     width: number;
     height: number;
-    tiles: { [key: string]: Tile }
+    tiles: Map<string, Tile>
 }
 
 export const tileMap = (tiles: Tile[]): TileMap => {
@@ -21,9 +22,9 @@ export const tileMap = (tiles: Tile[]): TileMap => {
     return {
         width,
         height,
-        tiles: tiles.reduce((set, tile) =>
-            Object.assign(set, { [positionToString(tile.position)]: tile }),
-            {}
+        tiles: tiles.reduce((map, tile) =>
+            map.set(positionToString(tile.position), tile),
+            new Map<string, Tile>()
         )
     }
 }
@@ -52,10 +53,16 @@ export const emptyTileMap = (width: number, height: number = width) => {
 };
 
 export const getAtMap = (map: TileMap, x: number, y: number) =>
-    map.tiles[`${x},${y}`]?.wall ?? false;
+    map.tiles.get(`${x},${y}`)?.wall ?? false;
 
-export const setAtMap = (map: TileMap, x: number, y: number, hasWall: boolean) =>
-    map.tiles[`${x},${y}`].wall = hasWall;
+export const setAtMap = (map: TileMap, x: number, y: number, hasWall: boolean) => {
+    const positionString = `${x},${y}`;
+    if (map.tiles.has(positionString)) {
+        map.tiles.get(positionString)!.wall = hasWall;
+    } else {
+        map.tiles.set(positionString, tile(position(x, y), hasWall))
+    }
+};
 
 export const toggleAtMap = (map: TileMap, x: number, y: number) =>
     setAtMap(map, x, y, !getAtMap(map, x, y));
