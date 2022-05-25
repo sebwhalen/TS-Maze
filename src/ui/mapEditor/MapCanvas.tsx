@@ -1,3 +1,4 @@
+import { lineToDegrees, moveInDirection, position } from "geometry/positions";
 import { GameMap } from "maps/gameMaps";
 import { getAtMap, setAtMap } from "maps/tileMaps";
 import React, { memo, useRef, useEffect } from "react";
@@ -19,8 +20,8 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
 
     const { tiles } = map;
 
-    const tileWidth = Math.floor(canvas.width / tiles.width);
-    const tileHeight = Math.floor(canvas.height / tiles.height);
+    const tileWidth = Math.trunc(canvas.width / tiles.width);
+    const tileHeight = Math.trunc(canvas.height / tiles.height);
 
     for (let x = 0; x < tiles.width; x++) {
         for (let y = 0; y < tiles.height; y++) {
@@ -32,10 +33,27 @@ const renderMap = (canvas: HTMLCanvasElement | null, map: GameMap) => {
             ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
         }
     }
+
+    const spawnPosition = map.spawn.position;
+
+    const spawnX = Math.trunc(spawnPosition.x * tileWidth);
+    const spawnY = Math.trunc(spawnPosition.y * tileHeight);
+
+    ctx.fillStyle = '#f00';
+    ctx.fillRect(spawnX - tileWidth / 2, spawnY - tileWidth / 2, tileWidth, tileHeight);
+
+    ctx.strokeStyle = '#0f0';
+    ctx.beginPath();
+    ctx.moveTo(spawnX, spawnY);
+
+    const target = moveInDirection(map.spawn.position, map.spawn.direction, 1);
+
+    ctx.lineTo(Math.trunc(target.x * tileWidth), Math.trunc(target.y * tileHeight));
+
+    ctx.stroke();
 };
 
 const handleMouse = (map: GameMap, editMode: MapEditMode, e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    console.log(editMode);
     const { tiles } = map;
     const buttons = e.buttons;
 
@@ -46,19 +64,34 @@ const handleMouse = (map: GameMap, editMode: MapEditMode, e: React.MouseEvent<HT
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
 
-    const x = Math.trunc((e.clientX - rect.left) * (tiles.width / canvas.width));
-    const y = Math.trunc((e.clientY - rect.top) * (tiles.height / canvas.height));
+    const x = (e.clientX - rect.left) * (tiles.width / canvas.width);
+    const y = (e.clientY - rect.top) * (tiles.height / canvas.height)
+
+    const truncX = Math.trunc(x);
+    const truncY = Math.trunc(y);
 
     if (
-        x === 0 ||
-        x === tiles.width - 1 ||
-        y === 0 ||
-        y === tiles.height - 1
+        truncX === 0 ||
+        truncX === tiles.width - 1 ||
+        truncY === 0 ||
+        truncY === tiles.height - 1
     ) {
         return;
     }
 
-    setAtMap(tiles, x, y, buttons === 1);
+    if (editMode === 'wall') {
+        setAtMap(tiles, truncX, truncY, buttons === 1);
+    } else if (buttons === 1 && !getAtMap(tiles, truncX, truncY)) {
+        map.spawn = {
+            ...map.spawn,
+            position: position(x, y)
+        };
+    } else if (buttons === 2) {
+        map.spawn = {
+            ...map.spawn,
+            direction: lineToDegrees(map.spawn.position, position(x, y))
+        };
+    }
 
     renderMap(canvas, map);
 };

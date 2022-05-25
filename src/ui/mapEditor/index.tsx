@@ -31,11 +31,10 @@ export const MapEditor = () => {
 
         <section>
             {Object.entries(mapEditModes).map(([label, mode]) =>
-                <label>
+                <label key={mode}>
                     <span>{label}</span>
-                    
-                    <input key={mode}
-                        type="radio"
+
+                    <input type="radio"
                         name="edit-mode"
                         value={mode}
                         checked={editMode === mode}

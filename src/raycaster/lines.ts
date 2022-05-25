@@ -1,3 +1,4 @@
+import { degreesToRadians } from "geometry/angles";
 import { Position } from "geometry/positions";
 
 function* getYIntercepts(x: number, y: number, direction: number): Generator<Position> {
@@ -59,7 +60,7 @@ const calculateXInterceptInformation = (direction: number, y: number, x: number)
         ? 1
         : -1;
 
-    const xInterceptDx = Math.tan(direction * Math.PI / 180);
+    const xInterceptDx = Math.tan(degreesToRadians(direction));
 
     const firstXInterceptX = x + (firstXInterceptY - y) * xInterceptDx;
 
