@@ -9,15 +9,20 @@ const bench = (runs: number) =>
     });
 
 interface BenchmarkDisplayProps {
-    results?: BenchmarkResult
+    results: BenchmarkResult[]
 };
 
+const BenchmarkDisplayRow = ({ numberOfRuns, total, average }: BenchmarkResult) =>
+    <tr>
+        <td className="text-right">{numberOfRuns}</td>
+        <td className="text-right">{total.toFixed(2)}</td>
+        <td className="text-right">{average.toFixed(2)}</td>
+    </tr>;
+
 const BenchmarkDisplay = ({ results }: BenchmarkDisplayProps) => {
-    if (!results) {
+    if (results.length === 0) {
         return <p>No benchmarks have been run.</p>
     }
-
-    const { numberOfRuns, total, average } = results;
 
     return <section>
         <table>
@@ -29,11 +34,7 @@ const BenchmarkDisplay = ({ results }: BenchmarkDisplayProps) => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td className="text-right">{numberOfRuns}</td>
-                    <td className="text-right">{total.toFixed(2)}</td>
-                    <td className="text-right">{average.toFixed(2)}</td>
-                </tr>
+                {results.map((result, i) => <BenchmarkDisplayRow key={i}{...result} />)}
             </tbody>
         </table>
     </section>
@@ -68,10 +69,10 @@ const BenchmarkConfig = ({ runBenchmark }: {
 };
 
 export const BenchmarkSuite = () => {
-    const [results, setResults] = useState<BenchmarkResult>();
+    const [results, setResults] = useState<BenchmarkResult[]>([]);
 
     const updateRuns = (runs: number) => {
-        setResults(bench(runs));
+        setResults([...results, bench(runs)]);
     };
 
     return <section>

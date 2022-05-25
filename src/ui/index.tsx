@@ -24,7 +24,7 @@ const SectionSelector = ({ setSection }: SectionSelectorProps) =>
 
 
 export const MainApp = () => {
-    const [section, setSection] = useState<ReactElement | undefined>(sections['Map Editor']);
+    const [section, setSection] = useState<ReactElement | undefined>(sections['Benchmarks']);
 
     return (section)
         ? <section>
