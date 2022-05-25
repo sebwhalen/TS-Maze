@@ -1,5 +1,4 @@
-import { map } from "lodash";
-import { position, Position, positionToString } from "../raycaster/positions";
+import { position, Position, positionToString } from "../geometry/positions";
 
 export interface Tile {
     position: Position,
@@ -53,10 +52,10 @@ export const emptyTileMap = (width: number, height: number = width) => {
 };
 
 export const getAtMap = (map: TileMap, x: number, y: number) =>
-    map.tiles.get(`${x},${y}`)?.wall ?? false;
+    map.tiles.get(positionToString(x, y))?.wall ?? false;
 
 export const setAtMap = (map: TileMap, x: number, y: number, hasWall: boolean) => {
-    const positionString = `${x},${y}`;
+    const positionString = positionToString(x, y);
     if (map.tiles.has(positionString)) {
         map.tiles.get(positionString)!.wall = hasWall;
     } else {

@@ -1,5 +1,5 @@
 import { getIntercepts } from "./lines";
-import { position, positionToString } from "./positions";
+import { position, positionToString } from "geometry/positions";
 
 describe('getIntercepts', () => {
     [

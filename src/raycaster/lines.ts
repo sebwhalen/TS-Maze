@@ -1,4 +1,4 @@
-import { Position } from "./positions";
+import { Position } from "geometry/positions";
 
 function* getYIntercepts(x: number, y: number, direction: number): Generator<Position> {
     let next = (direction === 0)
