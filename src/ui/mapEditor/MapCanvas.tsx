@@ -43,6 +43,15 @@ const updateMap = (map: TileMap, e: React.MouseEvent<HTMLCanvasElement, MouseEve
     const x = Math.trunc((e.clientX - rect.left) * (map.width / canvas.width));
     const y = Math.trunc((e.clientY - rect.top) * (map.height / canvas.height));
 
+    if (
+        x === 0 ||
+        x === map.width - 1 ||
+        y === 0 ||
+        y === map.height - 1
+    ) {
+        return;
+    }
+
     setAtMap(map, x, y, buttons === 1);
 };
 
