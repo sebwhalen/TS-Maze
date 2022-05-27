@@ -16,15 +16,15 @@ function render(canvas: HTMLCanvasElement, map: GameMap, state: MapState) {
     context.fillStyle = '#000';
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    context.fillStyle = '#f00';
+    
 
     let col = 0;
 
     const halfHeight = canvas.height / 2;
 
     for (const { height } of castRays(map, state, canvas.width)) {
+        context.fillStyle = `rgba(255, 255, 255, ${height})`;
         const drawHeight = Math.trunc(height * canvas.height);
-
         
         context.fillRect(col, halfHeight - Math.trunc(drawHeight / 2), 1, drawHeight);
         col++;
