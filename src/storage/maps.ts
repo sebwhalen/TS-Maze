@@ -38,7 +38,7 @@ const deserializeGameMap = (map: SerializableGameMap): GameMap =>
 });
 
 export const saveMap = (map: GameMap) =>
-    localStorage.setItem('mapStorageKey', JSON.stringify(serializeMap(map)));
+    localStorage.setItem(mapStorageKey, JSON.stringify(serializeMap(map)));
 
 export const loadMap = (): GameMap => {
     const map = localStorage.getItem(mapStorageKey);

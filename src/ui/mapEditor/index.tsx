@@ -1,8 +1,5 @@
-import { spawn } from "entities/spawn";
-import { position } from "geometry/positions";
-import { gameMap } from "maps/gameMaps";
-import { emptyTileMap } from "maps/tileMaps";
 import { useState } from "react";
+import { loadMap, saveMap } from 'storage/maps';
 import { MapCanvas } from "./MapCanvas";
 import { MapEditMode, mapEditModes } from "./mapEditModes";
 
@@ -12,36 +9,31 @@ import { MapEditMode, mapEditModes } from "./mapEditModes";
  *  
  */
 export const MapEditor = () => {
-    const [map] = useState(
-        gameMap(
-            emptyTileMap(30, 30),
-            spawn(
-                position(1, 1),
-                0
-            )
-        )
-    );
+    const [map] = useState(loadMap());
 
     const [editMode, setEditMode] = useState<'wall' | 'spawn'>('wall')
 
-    return <section className="flex justify-between select-none">
-        <section className="border border-slate-900">
-            <MapCanvas map={map} editMode={editMode} />
-        </section>
+    return <section>
+        <div className="flex justify-between select-none">
+            <section className="border border-slate-900">
+                <MapCanvas map={map} editMode={editMode} />
+            </section>
 
-        <section>
-            {Object.entries(mapEditModes).map(([label, mode]) =>
-                <label key={mode}>
-                    <span>{label}</span>
+            <section>
+                {Object.entries(mapEditModes).map(([label, mode]) =>
+                    <label key={mode}>
+                        <span>{label}</span>
 
-                    <input type="radio"
-                        name="edit-mode"
-                        value={mode}
-                        checked={editMode === mode}
-                        onChange={(e) => setEditMode(e.target.value as MapEditMode)} />
-                </label>
+                        <input type="radio"
+                            name="edit-mode"
+                            value={mode}
+                            checked={editMode === mode}
+                            onChange={(e) => setEditMode(e.target.value as MapEditMode)} />
+                    </label>
 
-            )}
-        </section>
+                )}
+            </section>
+        </div>
+        <button onClick={() => saveMap(map)}>Save Map</button>
     </section>;
 };
