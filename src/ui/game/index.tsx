@@ -1,5 +1,3 @@
-import { isEntityType } from 'entities/base';
-import { player } from 'entities/player';
 import { GameMap } from 'maps/gameMaps';
 import { castRays } from 'raycaster/raycaster';
 import { useEffect, useRef, useState } from 'react';
