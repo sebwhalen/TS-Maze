@@ -46,7 +46,7 @@ export const loadMap = (): GameMap => {
     if (!map) {
         return gameMap(
             emptyTileMap(10, 10),
-            spawn(position(1, 1), 0)
+            spawn.create(position(1, 1), 0)
         );
     }
 

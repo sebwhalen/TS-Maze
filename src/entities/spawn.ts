@@ -1,5 +1,5 @@
 import { Position } from "geometry/positions";
-import { Entity } from "./baseEntities";
+import { Entity, EntityTemplate } from "./base";
 
 export interface Spawn extends Entity {
     type: 'spawn',
@@ -7,9 +7,14 @@ export interface Spawn extends Entity {
     direction: number
 }
 
-export const spawn = (position: Position, direction: number): Spawn =>
-({
-    type: 'spawn',
-    position,
-    direction
-});
+const type = 'spawn';
+
+export const spawn: EntityTemplate<Spawn> = {
+    type,
+    create: (position: Position, direction: number) =>
+    ({
+        type,
+        position,
+        direction
+    })
+};

@@ -1,10 +1,12 @@
 import { ReactElement, useState } from "react";
 import { BenchmarkSuite } from "./benchmarks";
+import { GameWindow } from './game';
 import { MapEditor } from "./mapEditor";
 
 const sections: { [name: string]: ReactElement } = {
     'Benchmarks': <BenchmarkSuite />,
-    'Map Editor': <MapEditor />
+    'Map Editor': <MapEditor />,
+    'Game Window': <GameWindow />
 };
 
 interface SectionSelectorProps {
