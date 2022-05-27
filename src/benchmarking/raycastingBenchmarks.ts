@@ -1,5 +1,9 @@
+import { spawn } from 'entities/spawn';
+import { position } from 'geometry/positions';
+import { gameMap } from 'maps/gameMaps';
 import { emptyTileMap, Tile, } from "maps/tileMaps";
-import { castRay } from "raycaster/rays";
+import { castRays } from 'raycaster/raycaster';
+import { initializeMapState } from 'state/mapState';
 import { bench } from "./bench";
 
 interface RaycasterBenchmarkOptions {
@@ -40,11 +44,11 @@ export const benchRaycaster = (options: RaycasterBenchmarkOptions) => {
             });
         }
     }
-
-    const map = emptyTileMap(options.mapSize);
-
     //Ray is cast from top left position at a slightly off angle to maximize calculations
-    const castRaysForBenchmark = () => castRay(map, 1, 1, 89);
+    const map = gameMap(emptyTileMap(options.mapSize), spawn.create(position(1, 1), 89))
+    const state = initializeMapState(map);
 
-    return bench(castRaysForBenchmark, options.numberOfRuns)
+    const castRaysForBenchmark = () => [...castRays(map, state, options.numberOfRuns)];
+
+    return bench(castRaysForBenchmark, 1)
 };
