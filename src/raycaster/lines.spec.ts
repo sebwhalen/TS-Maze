@@ -72,6 +72,46 @@ describe('getIntercepts', () => {
             expected: [
                 position(2, 1.5262038896415207)
             ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 179,
+            expected: [
+                position(1, 1.5087275324641087),
+                position(0, 1.5261825973923262)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 89,
+            expected: [
+                position(1.5087275324641087, 2),
+                position(1.5261825973923262, 3)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 91,
+            expected: [
+                position(1.4912724675358913, 2),
+                position(1.4738174026076738, 3)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 271,
+            expected: [
+                position(1.5087275324641085, 1),
+                position(1.5261825973923258, 0)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 269,
+            expected: [
+                position(1.4912724675358913, 1),
+                position(1.4738174026076738, 0)
+            ]
         }
     ].forEach(({ position, direction, expected }) => {
         test(`given (${positionToString(position)}) and ${direction}, expect first three intercepts to be correct.`, () => {

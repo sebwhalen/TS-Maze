@@ -61,9 +61,9 @@ const calculateXInterceptInformation = (direction: number, y: number, x: number)
         ? 1
         : -1;
 
-    const xInterceptDx = 1 / Math.tan(degreesToRadians(direction));
+    const xInterceptDx = xInterceptDy / Math.tan(degreesToRadians(direction));
 
-    const firstXInterceptX = x + (firstXInterceptY - y) * xInterceptDx;
+    const firstXInterceptX = x + Math.abs(firstXInterceptY - y) * xInterceptDx;
 
     return {
         firstXInterceptX,
@@ -84,9 +84,9 @@ const calculateYInterceptInformation = (direction: number, x: number, xIntercept
         ? 1
         : -1;
 
-    const yInterceptDy = 1 / xInterceptDx;
+    const yInterceptDy = yInterceptDx / xInterceptDx;
 
-    const firstYInterceptY = y + (firstYInterceptX - x) * yInterceptDy;
+    const firstYInterceptY = y + Math.abs(firstYInterceptX - x) * yInterceptDy;
 
     return {
         firstYInterceptX,
