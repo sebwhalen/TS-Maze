@@ -9,11 +9,17 @@ describe('castRay', () => {
             x: 1.5,
             y: 1.5,
             direction: 3.3,
+            expected: 7.512
+        },
+        {
+            x: 1.5,
+            y: 1.5,
+            direction: 90,
             expected: 7.5
         }
     ].forEach(({ x, y, direction, expected }) => {
         test(`Given (${x},${y}) and angle ${direction}, produces ${expected}`, () => {
-            expect(castRay(map, x, y, direction)).toBeCloseTo(expected, 1);
+            expect(castRay(map, x, y, direction)).toBeCloseTo(expected);
         });
     })
 });

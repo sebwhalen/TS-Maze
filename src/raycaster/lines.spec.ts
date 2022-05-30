@@ -57,6 +57,22 @@ describe('getIntercepts', () => {
                 position(2.5, 0)
             ]
         },
+        {
+            position: position(1.5, 1.5),
+            direction: 93,
+            expected: [
+                position(1.4737961103584796, 2),
+                position(1.4213883310754385, 3),
+                position(1.3689805517923974, 4)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 3,
+            expected: [
+                position(2, 1.5262038896415207)
+            ]
+        }
     ].forEach(({ position, direction, expected }) => {
         test(`given (${positionToString(position)}) and ${direction}, expect first three intercepts to be correct.`, () => {
             const gen = getIntercepts(position.x, position.y, direction);

@@ -56,11 +56,12 @@ const calculateXInterceptInformation = (direction: number, y: number, x: number)
         ? Math.trunc(y) + 1
         : Math.ceil(y) - 1;
 
+
     const xInterceptDy = (movingUp)
         ? 1
         : -1;
 
-    const xInterceptDx = Math.tan(degreesToRadians(direction));
+    const xInterceptDx = 1 / Math.tan(degreesToRadians(direction));
 
     const firstXInterceptX = x + (firstXInterceptY - y) * xInterceptDx;
 
@@ -72,7 +73,7 @@ const calculateXInterceptInformation = (direction: number, y: number, x: number)
     };
 }
 
-const calculateYInterceptInformation = (direction: number, x: number, xInterceptDy: number, y: number) => {
+const calculateYInterceptInformation = (direction: number, x: number, xInterceptDx: number, y: number) => {
     const movingRight = (direction < 90 || direction > 270);
 
     const firstYInterceptX = (movingRight)
@@ -83,7 +84,7 @@ const calculateYInterceptInformation = (direction: number, x: number, xIntercept
         ? 1
         : -1;
 
-    const yInterceptDy = 1 / xInterceptDy;
+    const yInterceptDy = 1 / xInterceptDx;
 
     const firstYInterceptY = y + (firstYInterceptX - x) * yInterceptDy;
 
@@ -127,7 +128,7 @@ export function* getIntercepts(x: number, y: number, direction: number): Generat
     };
 
     //Calculate y intercept information
-    const { firstYInterceptX, firstYInterceptY, yInterceptDx, yInterceptDy } = calculateYInterceptInformation(direction, x, xInterceptDy, y);
+    const { firstYInterceptX, firstYInterceptY, yInterceptDx, yInterceptDy } = calculateYInterceptInformation(direction, x, xInterceptDx, y);
 
     const nextY = {
         x: firstYInterceptX,
