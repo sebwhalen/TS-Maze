@@ -4,3 +4,4 @@ Next steps:
 
 - Map editor should allow setting map size.
 - Map editor should allow saving and loading multiple maps.
+- Bug: raycaster hits incorrect wall faces when moving north or west.
