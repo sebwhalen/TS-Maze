@@ -59,26 +59,18 @@ describe('getIntercepts', () => {
         },
         {
             position: position(1.5, 1.5),
-            direction: 93,
+            direction: 359,
             expected: [
-                position(1.4737961103584796, 2),
-                position(1.4213883310754385, 3),
-                position(1.3689805517923974, 4)
+                position(2, 1.4912724675358908),
+                position(3, 1.4738174026076722)
             ]
         },
         {
             position: position(1.5, 1.5),
-            direction: 3,
+            direction: 1,
             expected: [
-                position(2, 1.5262038896415207)
-            ]
-        },
-        {
-            position: position(1.5, 1.5),
-            direction: 179,
-            expected: [
-                position(1, 1.5087275324641087),
-                position(0, 1.5261825973923262)
+                position(2, 1.5087275324641087),
+                position(3, 1.5261825973923264)
             ]
         },
         {
@@ -99,10 +91,18 @@ describe('getIntercepts', () => {
         },
         {
             position: position(1.5, 1.5),
-            direction: 271,
+            direction: 179,
             expected: [
-                position(1.5087275324641085, 1),
-                position(1.5261825973923258, 0)
+                position(1, 1.5087275324641087),
+                position(0, 1.5261825973923262)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 181,
+            expected: [
+                position(1, 1.4912724675358913),
+                position(0, 1.473817402607674)
             ]
         },
         {
@@ -111,6 +111,14 @@ describe('getIntercepts', () => {
             expected: [
                 position(1.4912724675358913, 1),
                 position(1.4738174026076738, 0)
+            ]
+        },
+        {
+            position: position(1.5, 1.5),
+            direction: 271,
+            expected: [
+                position(1.5087275324641085, 1),
+                position(1.5261825973923258, 0)
             ]
         }
     ].forEach(({ position, direction, expected }) => {

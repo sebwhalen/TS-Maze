@@ -84,7 +84,7 @@ const calculateYInterceptInformation = (direction: number, x: number, xIntercept
         ? 1
         : -1;
 
-    const yInterceptDy = yInterceptDx / xInterceptDx;
+    const yInterceptDy = yInterceptDx * Math.tan(degreesToRadians(direction));
 
     const firstYInterceptY = y + Math.abs(firstYInterceptX - x) * yInterceptDy;
 
@@ -106,7 +106,7 @@ const getClosest = (startX: number, startY: number, p1: Position, p2: Position):
 }
 
 export function* getIntercepts(x: number, y: number, direction: number): Generator<Position> {
-    direction = direction % 360;
+    direction = ((direction % 360 ) + 360 ) % 360;
 
     //If movement is purely horizontal, return simpler generator.
     if (direction === 0 || direction === 180) {
