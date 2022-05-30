@@ -1,6 +1,17 @@
 import { getIntercepts } from "./lines";
 import { position, positionToString } from "geometry/positions";
 
+//Needed to account for lack of closeTo in jest expect
+interface CustomMatchers<R = unknown> {
+    closeTo(delta: number, value: number): R;
+}
+
+declare global {
+    namespace jest {
+        interface Expect extends CustomMatchers { }
+    }
+}
+
 describe('getIntercepts', () => {
     [
         {
@@ -61,64 +72,64 @@ describe('getIntercepts', () => {
             position: position(1.5, 1.5),
             direction: 359,
             expected: [
-                position(2, 1.4912724675358908),
-                position(3, 1.4738174026076722)
+                position(2, 1.491),
+                position(3, 1.474)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 1,
             expected: [
-                position(2, 1.5087275324641087),
-                position(3, 1.5261825973923264)
+                position(2, 1.509),
+                position(3, 1.526)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 89,
             expected: [
-                position(1.5087275324641087, 2),
-                position(1.5261825973923262, 3)
+                position(1.509, 2),
+                position(1.526, 3)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 91,
             expected: [
-                position(1.4912724675358913, 2),
-                position(1.4738174026076738, 3)
+                position(1.491, 2),
+                position(1.474, 3)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 179,
             expected: [
-                position(1, 1.5087275324641087),
-                position(0, 1.5261825973923262)
+                position(1, 1.509),
+                position(0, 1.526)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 181,
             expected: [
-                position(1, 1.4912724675358913),
-                position(0, 1.473817402607674)
+                position(1, 1.491),
+                position(0, 1.474)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 269,
             expected: [
-                position(1.4912724675358913, 1),
-                position(1.4738174026076738, 0)
+                position(1.491, 1),
+                position(1.474, 0)
             ]
         },
         {
             position: position(1.5, 1.5),
             direction: 271,
             expected: [
-                position(1.5087275324641085, 1),
-                position(1.5261825973923258, 0)
+                position(1.509, 1),
+                position(1.526, 0)
             ]
         }
     ].forEach(({ position, direction, expected }) => {
@@ -126,7 +137,12 @@ describe('getIntercepts', () => {
             const gen = getIntercepts(position.x, position.y, direction);
 
             for (let i = 0; i < expected.length; i++) {
-                expect(gen.next().value).toEqual(expected[i]);
+                const actual = gen.next().value;
+                const expectedValue = expected[i];
+                expect(actual).toEqual({
+                    x: expect.closeTo(expectedValue.x, 3),
+                    y: expect.closeTo(expectedValue.y, 3)
+                });
             }
         })
     });
