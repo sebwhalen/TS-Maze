@@ -16,7 +16,8 @@ interface SquareDrawingInstructions extends BaseDrawingInstructions {
 
 interface LineDrawingInstructions extends BaseDrawingInstructions {
     type: 'line',
-    direction: number
+    direction: number,
+    length?: number
 }
 
 export type GridRenderInstructionsLoader = () => Generator<LineDrawingInstructions | SquareDrawingInstructions>;
@@ -91,10 +92,12 @@ const render = (
         } else {
             const { x, y, direction, color } = instruction;
 
+            const length = instruction.length ?? 1;
+
             const startX = x * tileWidth;
             const startY = y * tileWidth;
 
-            const end = moveInDirection(position(startX, startY), direction, tileWidth);;
+            const end = moveInDirection(position(startX, startY), direction, tileWidth * length);;
 
             ctx.strokeStyle = color;
             ctx.beginPath();

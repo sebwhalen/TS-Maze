@@ -1,6 +1,7 @@
 import { lineToDegrees, position } from "geometry/positions";
 import { GameMap } from "maps/gameMaps";
 import { getAtMap, setAtMap } from "maps/tileMaps";
+import { castRay } from "raycaster/raycaster";
 import { GridRenderInstructionsLoader, InteractiveGrid } from "ui/tools/InteractiveGrid";
 import { MapEditMode } from "./mapEditModes";
 
@@ -58,11 +59,14 @@ const instructionGenerator = (map: GameMap): GridRenderInstructionsLoader =>
             color: '#f00'
         };
 
+        const viewLength = castRay(map.tiles, map.spawn.position.x, map.spawn.position.y, map.spawn.direction);
+
         yield {
             type: 'line',
             ...map.spawn.position,
             direction: map.spawn.direction,
-            color: '#0f0'
+            color: '#0f0',
+            length: viewLength
         };
     };
 
