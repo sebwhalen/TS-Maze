@@ -1,4 +1,4 @@
-import { degreesToRadians, radiansToDegrees } from "./angles";
+import { degreesToRadians, modDegrees, radiansToDegrees } from "./angles";
 
 export interface Position {
     x: number,
@@ -21,7 +21,7 @@ export const positionToString = (position: Position | number, y: number = 0): st
         : `${position},${y}`;
 
 export const lineToDegrees = (start: Position, end: Position): number =>
-    radiansToDegrees(Math.atan2((end.y - start.y), (end.x - start.x))) % 360;
+    modDegrees(radiansToDegrees(Math.atan2((end.y - start.y), (end.x - start.x))));
 
 export const moveInDirection = (pos: Position, direction: number, distance: number): Position => {
     const angleRads = degreesToRadians(direction);

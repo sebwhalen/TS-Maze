@@ -1,4 +1,4 @@
-import { degreesToRadians } from "geometry/angles";
+import { degreesToRadians, modDegrees } from "geometry/angles";
 import { Position } from "geometry/positions";
 
 function* getYIntercepts(x: number, y: number, direction: number): Generator<Position> {
@@ -106,7 +106,7 @@ const getClosest = (startX: number, startY: number, p1: Position, p2: Position):
 }
 
 export function* getIntercepts(x: number, y: number, direction: number): Generator<Position> {
-    direction = ((direction % 360 ) + 360 ) % 360;
+    direction = modDegrees(direction);
 
     //If movement is purely horizontal, return simpler generator.
     if (direction === 0 || direction === 180) {

@@ -1,21 +1,37 @@
 import { isEntityType } from 'entities/base';
 import { player } from 'entities/player';
+import { modDegrees } from 'geometry/angles';
 import { GameMap } from 'maps/gameMaps';
 import { getAtMap, TileMap } from 'maps/tileMaps';
 import { MapState } from 'state/mapState';
 import { getIntercepts } from './lines';
 
 export const castRay = (map: TileMap, x: number, y: number, direction: number): number => {
+    direction = modDegrees(direction);
     const interceptGenerator = getIntercepts(x, y, direction);
+
+    const movingLeft = (direction > 90 && direction < 270);
+    const movingDown = (direction > 180);
 
     for (let intercept = interceptGenerator.next(); ; intercept = interceptGenerator.next()) {
         const { x: newX, y: newY } = intercept.value;
 
-        const tx = Math.trunc(newX);
-        const ty = Math.trunc(newY);
+        const xAxisHit = Math.trunc(newY) === newY;
+
+        const tx = (!xAxisHit && movingLeft)
+            ? newX - 1
+            : (!xAxisHit)
+                ? newX
+                : Math.trunc(newX);
+        
+        const ty = (xAxisHit && movingDown)
+            ? newY - 1
+            : (xAxisHit)
+                ? newY
+                : Math.trunc(newY);
 
         //If ray escapes map, it goes on forever.
-        if (tx < 0 || tx > map.width || ty < 0 || ty > map.height) {            
+        if (tx < 0 || tx > map.width || ty < 0 || ty > map.height) {
             return Infinity;
         }
 
@@ -50,9 +66,7 @@ export function* castRays(map: GameMap, state: MapState, rays: number): Generato
     const halfWidth = Math.trunc(rays / 2);
 
     for (let a = -halfWidth; a < halfWidth; a++) {
-        const ray = { height: 1 / castRay(map.tiles, x, y, direction + a * rayDiff) };
-
-        yield ray;
+        yield { height: (1 / castRay(map.tiles, x, y, direction + a * rayDiff)) };
     }
 
     return;

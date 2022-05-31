@@ -1,3 +1,4 @@
+import * as fc from 'fast-check';
 import { getIntercepts } from "./lines";
 import { position, positionToString } from "geometry/positions";
 
@@ -146,4 +147,26 @@ describe('getIntercepts', () => {
             }
         })
     });
+
+    test('corresponding angles should produce matching results', () => {
+        fc.assert(
+            fc.property(
+                fc.integer({ min: -10000, max: 10000 }),
+                (angle) => {
+                    const base = getIntercepts(5, 5, angle);
+                    const rotated = getIntercepts(5, 5, angle + 360);
+
+                    expect([
+                        base.next().value,
+                        base.next().value,
+                        base.next().value
+                    ]).toEqual([
+                        rotated.next().value,
+                        rotated.next().value,
+                        rotated.next().value
+                    ]);
+                }
+            )
+        )
+    })
 })
