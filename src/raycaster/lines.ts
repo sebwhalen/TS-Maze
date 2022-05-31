@@ -73,7 +73,7 @@ const calculateXInterceptInformation = (direction: number, y: number, x: number)
     };
 }
 
-const calculateYInterceptInformation = (direction: number, x: number, xInterceptDx: number, y: number) => {
+const calculateYInterceptInformation = (direction: number, x: number,y: number) => {
     const movingRight = (direction < 90 || direction > 270);
 
     const firstYInterceptX = (movingRight)
@@ -128,7 +128,7 @@ export function* getIntercepts(x: number, y: number, direction: number): Generat
     };
 
     //Calculate y intercept information
-    const { firstYInterceptX, firstYInterceptY, yInterceptDx, yInterceptDy } = calculateYInterceptInformation(direction, x, xInterceptDx, y);
+    const { firstYInterceptX, firstYInterceptY, yInterceptDx, yInterceptDy } = calculateYInterceptInformation(direction, x, y);
 
     const nextY = {
         x: firstYInterceptX,
