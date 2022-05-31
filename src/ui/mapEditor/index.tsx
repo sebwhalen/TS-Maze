@@ -14,7 +14,7 @@ export const MapEditor = () => {
     const [editMode, setEditMode] = useState<'wall' | 'spawn'>('wall')
 
     return <section>
-        <div className="flex justify-between select-none">
+        <div className="flex select-none">
             <section className="border border-slate-900">
                 <MapCanvas map={map} editMode={editMode} />
             </section>
