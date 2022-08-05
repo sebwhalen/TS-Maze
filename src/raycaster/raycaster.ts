@@ -1,6 +1,6 @@
 import { isEntityType } from 'entities/base';
 import { player } from 'entities/player';
-import { modDegrees } from 'geometry/angles';
+import { degreesToRadians, modDegrees } from 'geometry/angles';
 import { GameMap } from 'maps/gameMaps';
 import { getAtMap, TileMap } from 'maps/tileMaps';
 import { MapState } from 'state/mapState';
@@ -23,7 +23,7 @@ export const castRay = (map: TileMap, x: number, y: number, direction: number): 
             : (!xAxisHit)
                 ? newX
                 : Math.trunc(newX);
-        
+
         const ty = (xAxisHit && movingDown)
             ? newY - 1
             : (xAxisHit)
@@ -49,7 +49,7 @@ interface RenderInstruction {
     height: number
 }
 
-const radius = 100;
+const radius = 60;
 
 export function* castRays(map: GameMap, state: MapState, rays: number): Generator<RenderInstruction> {
     const playerInstance = state.get(player.type)?.[0];
@@ -65,8 +65,12 @@ export function* castRays(map: GameMap, state: MapState, rays: number): Generato
 
     const halfWidth = Math.trunc(rays / 2);
 
-    for (let a = -halfWidth; a < halfWidth; a++) {
-        yield { height: (1 / castRay(map.tiles, x, y, direction + a * rayDiff)) };
+    for (let offset = -halfWidth; offset < halfWidth; offset++) {
+        const angle = offset * rayDiff
+
+        const rayDistance = castRay(map.tiles, x, y, direction + angle) * Math.cos(degreesToRadians(angle))
+
+        yield { height: 1 / rayDistance };
     }
 
     return;
