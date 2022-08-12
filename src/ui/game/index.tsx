@@ -1,4 +1,4 @@
-import { Engine } from 'engine/engine';
+import { Engine } from 'engine/Engine';
 import { useEffect, useRef } from 'react';
 import { loadMap } from 'storage/maps'
 
