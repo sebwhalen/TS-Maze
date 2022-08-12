@@ -49,9 +49,7 @@ interface RenderInstruction {
     height: number
 }
 
-const radius = 60;
-
-export function* castRays(map: GameMap, state: MapState, rays: number): Generator<RenderInstruction> {
+export function* castRays(map: GameMap, state: MapState, rays: number, radius = 60): Generator<RenderInstruction> {
     const playerInstance = state.get(player.type)?.[0];
 
     if (!playerInstance || !isEntityType(player, playerInstance)) {
